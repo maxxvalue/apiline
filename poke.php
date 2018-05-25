@@ -13,7 +13,7 @@ if (!is_null($events['events'])) {
 		$groupId = $event['source']['groupId'];
 
 		//ล็อคห้องไลน์
-		// if (in_array($groupId, ['Cb8a3124f5b0ca244d18d93e8cf0a6719','Cdd64c6897ec79239b5a6dda810959d02', 'Cb8a3124f5b0ca244d18d93e8cf0a6719', 'Ce890273318ba93fbef2641153c9faf43'])) {
+		// if (in_array($groupId, ['Cb8a3124f5b0ca244d18d93e8cf0a6719', 'Cdd64c6897ec79239b5a6dda810959d02', 'Cb8a3124f5b0ca244d18d93e8cf0a6719', 'Ce890273318ba93fbef2641153c9faf43'])) {
 		if (in_array($groupId, ['Cf8f0e0a09af3a8cd72b8ccb04ec3bdc3'])) { //test
 
 			//ตั้งห้องรีพอร์ต
