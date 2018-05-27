@@ -569,4 +569,5 @@ groupId : $groupId";
 	curl_exec($ch);
 	curl_close($ch);
 }
-echo "\r\nConnectSuccess";
+//echo "\r\nConnectSuccess";
+echo 'OK';
