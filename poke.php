@@ -17,7 +17,7 @@ if (!is_null($events['events'])) {
 		if (in_array($groupId, ['C5685bfa2cf540e657153cb048233458b', 'Ce890273318ba93fbef2641153c9faf43', 'Cb8a3124f5b0ca244d18d93e8cf0a6719', 'Cf8f0e0a09af3a8cd72b8ccb04ec3bdc3'])) { //test
 
 			//ตั้งห้องรีพอร์ต
-			$reportRoom = 'C5685bfa2cf540e657153cb048233458b';
+			$reportRoom = 'Cb8a3124f5b0ca244d18d93e8cf0a6719';
 
 			//รับค่าสำคัญจาก line
 			$type = $event['message']['type'];
