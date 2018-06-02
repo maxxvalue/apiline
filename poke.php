@@ -263,7 +263,7 @@ if (!is_null($events['events'])) {
 				update($table, 'name', codeName($name), 'id', $id);
 				update('money', 'name', codeName($name), 'lineId', $lineId);
 				//ไม่ต้องตอบ id ต่อไปนี้
-				if (in_array($id, [4, 17])) {
+				if (in_array($id, [])) {
 					unset($replyText);
 				}
 			}
