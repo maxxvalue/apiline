@@ -1,7 +1,6 @@
 <?php
 $table = "poke";
-$access_token = 'Z8Diikrg1RLZu/AP9mPjrjgIwUKRhgam8aoSEYxT5nrzq+DjHIcWrh23J3DMVB7mTNVqt1py8xBXipDRvpXUCgDvv8GJV3yMIb6BZl88wHZSiOY+DJm1aqi8fE1iV8ObBigJLxUz6RKDcYGfacP0RQdB04t89/1O/w1cDnyilFU=
-';
+$access_token = 'Z8Diikrg1RLZu/AP9mPjrjgIwUKRhgam8aoSEYxT5nrzq+DjHIcWrh23J3DMVB7mTNVqt1py8xBXipDRvpXUCgDvv8GJV3yMIb6BZl88wHZSiOY+DJm1aqi8fE1iV8ObBigJLxUz6RKDcYGfacP0RQdB04t89/1O/w1cDnyilFU=';
 
 $content = file_get_contents('php://input');
 $events = json_decode($content, true);
@@ -14,11 +13,10 @@ if (!is_null($events['events'])) {
 		$groupId = $event['source']['groupId'];
 
 		//ล็อคห้องไลน์
-		 if (in_array($groupId, ['Cb8a3124f5b0ca244d18d93e8cf0a6719', 'Cdd64c6897ec79239b5a6dda810959d02', 'Cb8a3124f5b0ca244d18d93e8cf0a6719', 'Ce890273318ba93fbef2641153c9faf43'])) {
-		//if (in_array($groupId, ['Cdacdb65fb0ce9e99b6cbc614299dc346'])) { //test
+		if (in_array($groupId, ['Cb8a3124f5b0ca244d18d93e8cf0a6719','C7e28e6b82de5089577b71aa9d7ad6548','Ce890273318ba93fbef2641153c9faf43','C5685bfa2cf540e657153cb048233458b'])) { //test
 
 			//ตั้งห้องรีพอร์ต
-			//$reportRoom = 'Cb8a3124f5b0ca244d18d93e8cf0a6719';
+			//$reportRoom = 'C7e28e6b82de5089577b71aa9d7ad6548';
 
 			//รับค่าสำคัญจาก line
 			$type = $event['message']['type'];
@@ -191,28 +189,35 @@ if (!is_null($events['events'])) {
 
 			//ระบบยกเลิกแทง
 			if (in_array($text[0], ['x', 'X'])) {
-				$player = substr($text, 1);
-				for($i=0; $i<$data['player']; $i++) {
-					if (is_numeric($player[$i]) && (0<$player[$i] || $player[$i]<$data['player'])) {
-						$content[$player[$i]] = '';
+				if ($data['status'] == 'open') {
+					$cancel = '';
+					$player = substr($text, 1);
+					for($i=0; $i<$data['player']; $i++) {
+						if (is_numeric($player[$i]) && (0<$player[$i] || $player[$i]<$data['player'])) {
+							$content[$player[$i]] = '';
+							$cancel .= ' ยกเลิกขา' . $player[$i];
+						}
+					}
+					$content = json_encode($content);
+					update($table, 'content', $content, 'id', $id);
+					//ระบบตอบกลับ
+					if ($data['reply'] == 'yes') {
+						$reply = check($id, $data['player'], $data['muti']);
+						if ($reply == '') {
+							$replyText = "$name ไม่ได้แทง";
+						}
+						else {
+							$replyText = "{$name}{$cancel}\r\n{$reply}";
+						}
 					}
 				}
-				$content = json_encode($content);
-				update($table, 'content', $content, 'id', $id);
-				//ระบบตอบกลับ
-				if ($data['reply'] == 'yes') {
-					$reply = check($id, $data['player'], $data['muti']);
-					if ($reply == '') {
-						$replyText = "$name ไม่ได้แทง";
-					}
-					else {
-						$replyText = "$name $reply";
-					}
+				else if ($data['status'] != 'down') {
+					$replyText = "$name ปิดรอบแล้ว";
 				}
 			}
 
 			//check รายบุคคล
-			if (in_array($text, ['check', 'Check', 'Ch', 'CH', 'c', 'เช็ค'])) {
+			if (in_array($text, ['check', 'C', 'Check', 'ch', 'Ch', 'CH', 'c', 'เช็ค'])) {
 				$reply = check($id, $data['player'], $data['muti']);
 				if ($reply == '') {
 					$replyText = "$name ไม่ได้แทง";
@@ -226,33 +231,43 @@ if (!is_null($events['events'])) {
 			if ($data['muti'] == 'yes') {
 				//คำสั่งเล่นเด้ง
 				if ($text == 'เล่นเด้ง') {
-					$price = 0;
-					foreach ($content as $key => $value) {
-						if ($key == 'muti') {
-							continue;
+					if ($data['status'] == 'open') {
+						$price = 0;
+						foreach ($content as $key => $value) {
+							if ($key == 'muti') {
+								continue;
+							}
+							$price += $value;
 						}
-						$price += $value;
-					}
-					if ($net >= ($price * 2)) {
-						$content['muti'] = 'yes';
-						$content = json_encode($content);
-						update($table, 'content', $content, 'id', $id);
-						if ($data['reply'] == 'yes') {
-							$replyText = "$name เล่นเด้ง";
+						if ($net >= ($price * 2)) {
+							$content['muti'] = 'yes';
+							$content = json_encode($content);
+							update($table, 'content', $content, 'id', $id);
+							if ($data['reply'] == 'yes') {
+								$replyText = "$name เล่นเด้ง";
+							}
+						}
+						else {
+							$replyText = "$name เครดิตไม่พอต่อการเล่นเด้ง❗";
 						}
 					}
-					else {
-						$replyText = "$name เครดิตไม่พอต่อการเล่นเด้ง❗";
+					else if ($data['status'] != 'down') {
+						$replyText = "$name ปิดรอบแล้ว❗";
 					}
 				}
 
 				//คำสั่งไม่เล่นเด้ง
 				if ($text == 'ไม่เด้ง') {
-					$content['muti'] = 'no';
-					$content = json_encode($content);
-					update($table, 'content', $content, 'id', $id);
-					if ($data['reply'] == 'yes') {
-						$replyText = "$name ไม่เล่นเด้ง";
+					if ($data['status'] == 'open') {
+						$content['muti'] = 'no';
+						$content = json_encode($content);
+						update($table, 'content', $content, 'id', $id);
+						if ($data['reply'] == 'yes') {
+							$replyText = "$name ไม่เล่นเด้ง";
+						}
+					}
+					else if ($data['status'] != 'down') {
+						$replyText = "$name ปิดรอบแล้ว❗";
 					}
 				}
 			}
@@ -263,7 +278,7 @@ if (!is_null($events['events'])) {
 				update($table, 'name', codeName($name), 'id', $id);
 				update('money', 'name', codeName($name), 'lineId', $lineId);
 				//ไม่ต้องตอบ id ต่อไปนี้
-				if (in_array($id, [])) {
+				if (in_array($id, [4, 17])) {
 					unset($replyText);
 				}
 			}
@@ -306,7 +321,10 @@ if (!is_null($events['events'])) {
 สามารถกำหนดจำนวนเงินแทงแต่ละขาไม่เท่ากันได้
 T1-20 T2-30 T3-40 T3-50
 หรือ
-T1-20,2-30,3-40,4-50,5-60,6-70';
+T1-20,2-30,3-40,4-50,5-60,6-70
+
+พิมพ์ X ตามด้วยขาที่จะยกเลิก x123456
+เช่น x16 คือ การยกเลิกการแทงขาที่1  และ ขาที่6';
 						$replyText2 = "เปิดรอบย่อยที่ #$lap";
 						$data['status'] = 'open';
 						$data['lap'] = $lap;
@@ -341,10 +359,14 @@ JQ♥♠, JK♦️♠, QK♦️♠
 เช็คยอดเงินพิมพ์ "@id"
 
 🏧ฝากเงิน 24 ชั่วโมง
+
+ชื่อบัญชี
+สุรชัย ปาปะเขา
 เลขที่บัญชี
-xxxx
+0372523913
 พร้อมเพย์
-xxxx
+0644731049
+
 🚩ถอนเงินแจ้ง พพ. ก่อนปิดรอบ 10 นาที/หลังปิด15 นาที';
 						$replyText2 = 'ปิดรอบย่อยที่ #' . $data['lap'];
 						$data['status'] = 'check';
@@ -382,6 +404,7 @@ xxxx
 				if ($type == 'sticker' && $packageId == '2000003' && $stickerId == '48843') {
 					if ($data['status'] == 'close') {
 						$sentText = resultClose($data['game']);
+						resetReport($table);
 						$replyText = 'ปิดบ้านแล้ว';
 						$data['status'] = 'down';
 						$data = json_encode($data);
@@ -435,7 +458,7 @@ xxxx
 						else {
 							$replyText = "ขาเจ้า สรุปผิด\r\n" . $replyText;
 						}
-						$replyText .= "\r\n\r\nยันยืนผลสรุป @ok";
+						$replyText .= "\r\n\r\nยันยืนผลสรุป  yes หรือ @ok";
 						$data['status'] = 'check';
 						$data['lap'] = $data['lap'];
 						$data['result'] = $texts;
@@ -448,7 +471,7 @@ xxxx
 				}
 
 				//ยืนยันผล @ok
-				if (in_array($text, ['@ok', '@OK', '@Ok'])) {
+				if (in_array($text, ['@ok', '@OK', '@Ok', '@oK', 'yes', 'YES', 'Yes'])) {
 					$replyText = '';
 					foreach ($data['result'] as $key => $value) {
 						if ($key == '0') {
@@ -475,7 +498,7 @@ xxxx
 
 				//เติมเงิน
 				if ($text[0] == '$'){
-					if ($data['status'] == 'close') {
+					if (in_array($data['status'], ['close', 'open'])) {
 						$vars = explode('+', $text);
 						$memberId = substr($vars[0], 1);
 						$operator = '+';
@@ -497,9 +520,9 @@ xxxx
 								$tablePath = 'deposite';
 								if ($vars[2] != '') {
 									$percent = substr($vars[2], 0, strlen($vars[2]));
-									$bonus = $net*$percent/100;
+									$bonus = number_format($net*$percent/100, 0, '.', '');
 									$remaining += $bonus;
-									$bonusText = sprintf('โบนัส+%d ', $bonus);
+									$bonusText = "โบนัส+$bonus ";
 								}
 							}
 							else {
@@ -507,10 +530,9 @@ xxxx
 								$remaining = $userNet - $net;
 								$tablePath = 'withdraw';
 							}
-							$reportNet = $net + $bonus;
 							if(update('money', 'net', $remaining, 'lineId', $userlineId)) {
 								update('poke', 'net', $remaining, 'lineId', $userlineId);
-								report('reportPoke', $data['game'], $data['bigLap'], $data['lap'], [$tablePath=>$reportNet]);
+								report('reportPoke', $data['game'], $data['bigLap'], $data['lap'], [$tablePath=>$net, 'bonus'=>$bonus]);
 								$replyText = "{$preWord}เครดิตคุณ {$userName} {$operator}{$net} $bonusText= " . $remaining;
 							}
 						}
