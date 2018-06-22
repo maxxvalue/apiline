@@ -3,15 +3,15 @@ date_default_timezone_set('Asia/Bangkok');
 $host = '118.27.37.140:3306';
 $user = 'root';
 $pass = 'Pfsense@123';
-$database = 'ratchaphruek';
+$database = 'banhengheng';
 $con = new mysqli($host, $user, $pass, $database);
 mysqli_set_charset($con, "utf8");
 
-$access_token = 'E59LsP4Qyl9C7k4ndzuHaZHBhtXbbXFkV0bcbQntePoucQvo2s+Z25zHbHjqKmx4kImxIv/6VHV1hVxPLmyRGNAyFGUqp3Ag/6VMM74Y4ndtc3FG09EJHTT3jesHlLHmbLlegNIav/FWweB2zx0MAgdB04t89/1O/w1cDnyilFU=';
+$access_token = 'BUuSnMGJq49vclWGkPqWFwT3DQjbiQwC3Z7wRW3/5KKMUHaeak3nCb2cHtPKOh8S0bCVSqvOCGgh2s2UwQmfac4+XYuojGz/mS69XzfyA4380E6eyep+7MMQnhz7Bg/5BRFLQLYnsjstBImPLkBVZgdB04t89/1O/w1cDnyilFU=';
 
-$reportRoom = 'Ccd2f0725024162cd58d8c6133fd19183';
+$reportRoom = '';
 
-$playRoom = 'C00b074c37c6fb1b6634f96d73e806260';
+$playRoom = '';
 
 //ล้าง money
 function resetMoney() {
