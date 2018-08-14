@@ -5,8 +5,8 @@ $access_token = 'euKTKZ17IAy2EuoIGL/jGkkbnHY7Uahp3N8Rosyg3SMx1G92EvZmwf0GHVWfMaq
 $content = file_get_contents('php://input');
 $events = json_decode($content, true);
 require('function.php');
-// resetPoke();
-// resetMoney();
+ resetPoke();
+ resetMoney();
 if (!is_null($events['events'])) {
 	foreach ($events['events'] as $event) {
 		$replyToken = $event['replyToken'];
