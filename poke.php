@@ -5,8 +5,8 @@ $access_token = 'euKTKZ17IAy2EuoIGL/jGkkbnHY7Uahp3N8Rosyg3SMx1G92EvZmwf0GHVWfMaq
 $content = file_get_contents('php://input');
 $events = json_decode($content, true);
 require('function.php');
- resetPoke();
- resetMoney();
+// resetPoke();
+// resetMoney();
 if (!is_null($events['events'])) {
 	foreach ($events['events'] as $event) {
 		$replyToken = $event['replyToken'];
@@ -278,7 +278,7 @@ if (!is_null($events['events'])) {
 				update($table, 'name', codeName($name), 'id', $id);
 				update('money', 'name', codeName($name), 'lineId', $lineId);
 				//ไม่ต้องตอบ id ต่อไปนี้
-				if (in_array($id, [4, 17])) {
+				if (in_array($id, [])) {
 					unset($replyText);
 				}
 			}
