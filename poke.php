@@ -13,7 +13,7 @@ if (!is_null($events['events'])) {
 		$groupId = $event['source']['groupId'];
 
 		//ล็อคห้องไลน์
-		if (in_array($groupId, ['C9d04cbc5dbf94d10de1742df8c830d31'])) { //test
+		if (in_array($groupId, ['Cf4c29160ba12d941541aaf928cd38d9f'])) { //test
 
 			//ตั้งห้องรีพอร์ต
 			//$reportRoom = 'C7e28e6b82de5089577b71aa9d7ad6548';
