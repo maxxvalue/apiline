@@ -14,7 +14,7 @@ if (!is_null($events['events'])) {
 		$groupId = $event['source']['groupId'];
 
 		//ล็อคห้องไลน์
-			if (in_array($groupId, ['Ce890273318ba93fbef2641153c9faf43'])) {
+			if (in_array($groupId, ['Cf4c29160ba12d941541aaf928cd38d9f'])) {
 
 			//รับค่าสำคัญจาก line
 			$type = $event['message']['type'];
