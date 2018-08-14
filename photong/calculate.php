@@ -45,7 +45,7 @@ if ($_POST['money']) {
 if (isset($_POST['money'])) {
 	echo "
 	<script>
-		window.location = '../photong/panel.php';
+		window.location = '../photong/admin.php';
 	</script>
 	";
 }
